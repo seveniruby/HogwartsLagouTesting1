@@ -1,7 +1,6 @@
 import sys
 import unittest
 
-sys.path.append("..")
 from python.calc import Calc
 
 

@@ -38,7 +38,6 @@ class TestOrder:
         print("div")
         assert self.calc.div(1, 2) == 0.5
 
-    @pytest.mark.demo
     @pytest.mark.parametrize("a, b", [
         (1, 2), (2, 3), (3, 4)
     ])
