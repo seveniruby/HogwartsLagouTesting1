@@ -1,12 +1,24 @@
 import sys
 
 import pytest
+import yaml
 
 from python.calc import Calc
 
 
 def setup_module():
     print("setup_module")
+
+
+# @pytest.fixture(scope="module")
+def data():
+    with open("test_pytest.data.yaml") as f:
+        return yaml.load(f)
+
+
+def steps():
+    with open("test_pytest.steps.yaml") as f:
+        return yaml.load(f)
 
 
 class TestCalc:
@@ -38,16 +50,23 @@ class TestCalc:
         print("div")
         assert self.calc.div(1, 2) == 0.5
 
+    # todo: fixture与参数化合并使用
     @pytest.mark.demo
-    @pytest.mark.parametrize("a, b", [
-        (1, 2), (2, 3), (3, 4)
-    ])
-    def test_params(self, a, b):
+    @pytest.mark.parametrize("a, b, r", data())
+    def test_params(self, a, b, r):
         print("params")
         data = (a, b)
-        self.calc.add2(data)
-        self.calc.add(*data)
+        self.steps(data, r)
+        # assert self.calc.add2(data) == r
+        # assert self.calc.add(*data) ==r
 
+    def steps(self, data, r):
+        test_steps = steps()
+        for step in test_steps:
+            if step == "add":
+                assert self.calc.add(*data) == r
+            elif step == "add2":
+                assert self.calc.add2(data) == r
 
 class Demo:
     kind = 0
@@ -81,3 +100,6 @@ class TestCalc2:
         print(demo_1.kind)
         print(demo_2.kind)
         print(Demo.kind)
+
+    def test_demo2(self):
+        assert Calc.add_static(1, 2) == 3
